@@ -9,69 +9,56 @@
 <style>
 
 body{
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-background: linear-gradient(180deg,#f7eef3,#ffffff);
+font-family:system-ui,-apple-system,Segoe UI;
+background:linear-gradient(180deg,#f4f5f8,#ffffff);
 text-align:center;
 margin:0;
-padding:30px;
+padding:20px;
+overflow-x:hidden;
 }
 
 h1{
-color:#e94b88;
+color:#5d637a;
 font-weight:600;
-letter-spacing:1px;
 }
 
 #wheelContainer{
 position:relative;
-width:420px;
+width:90vw;
+max-width:420px;
 margin:auto;
 }
 
-#pointer{
-position:absolute;
-left:50%;
-transform:translateX(-50%);
-top:-18px;
-width:0;
-height:0;
-border-left:16px solid transparent;
-border-right:16px solid transparent;
-border-bottom:28px solid #333;
-z-index:10;
-}
-
 #wheel{
-width:420px;
-height:420px;
+width:100%;
+aspect-ratio:1;
 border-radius:50%;
 border:10px solid #444;
-position:relative;
 
 background:conic-gradient(
-#7fb3ff 0deg 45deg,
-#ff9fc4 45deg 90deg,
-#7fb3ff 90deg 135deg,
-#ff9fc4 135deg 180deg,
-#7fb3ff 180deg 225deg,
-#ff9fc4 225deg 270deg,
-#7fb3ff 270deg 315deg,
-#ff9fc4 315deg 360deg
+#7fa8e8 0deg 45deg,
+#e8a0bb 45deg 90deg,
+#7fa8e8 90deg 135deg,
+#e8a0bb 135deg 180deg,
+#7fa8e8 180deg 225deg,
+#e8a0bb 225deg 270deg,
+#7fa8e8 270deg 315deg,
+#e8a0bb 315deg 360deg
 );
 
-transition: transform 6s cubic-bezier(.17,.67,.2,1);
+transition:transform 6s cubic-bezier(.17,.67,.2,1);
+position:relative;
 }
 
 .sliceText{
 position:absolute;
-width:100%;
-top:50%;
 left:50%;
+top:50%;
 transform-origin:center;
 font-weight:600;
 color:white;
-text-shadow:0 2px 4px rgba(0,0,0,0.4);
-font-size:16px;
+font-size:14px;
+text-shadow:0 2px 4px rgba(0,0,0,0.35);
 }
 
 #centerCap{
@@ -82,32 +69,83 @@ transform:translate(-50%,-50%);
 width:70px;
 height:70px;
 border-radius:50%;
-background: radial-gradient(circle,#ffe4f0,#ff7fb2);
+background:radial-gradient(circle,#ffffff,#cfd3e6);
 border:5px solid white;
-box-shadow:0 4px 10px rgba(0,0,0,0.25);
-z-index:5;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+#pin{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-210px);
+width:20px;
+height:20px;
+background:#333;
+border-radius:50%;
+z-index:10;
+}
+
+#pin:after{
+content:"";
+position:absolute;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+width:4px;
+height:18px;
+background:#333;
 }
 
 button{
-margin-top:35px;
+margin-top:30px;
 padding:16px 40px;
 font-size:18px;
-background:#e94b88;
 border:none;
-color:white;
 border-radius:10px;
+background:#6c728a;
+color:white;
 cursor:pointer;
-}
-
-button:hover{
-background:#d93b77;
 }
 
 #result{
 margin-top:25px;
-font-size:30px;
+font-size:34px;
 font-weight:700;
-color:#e94b88;
+color:#ff4f8f;
+opacity:0;
+transition:opacity 1s;
+}
+
+.confetti,.sparkle{
+position:fixed;
+width:10px;
+height:10px;
+top:-10px;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(720deg);
+opacity:0;
+}
+}
+
+.balloon{
+position:fixed;
+bottom:-100px;
+width:40px;
+height:55px;
+border-radius:50%;
+animation:floatUp 7s linear forwards;
+}
+
+@keyframes floatUp{
+to{
+transform:translateY(-120vh);
+opacity:0;
+}
 }
 
 </style>
@@ -119,31 +157,29 @@ color:#e94b88;
 
 <div id="wheelContainer">
 
-<div id="pointer"></div>
-
 <div id="wheel"></div>
 
 <div id="centerCap"></div>
+
+<div id="pin"></div>
 
 </div>
 
 <button onclick="spinWheel()">SPIN</button>
 
-<div id="result"></div>
+<div id="result">🎀 IT'S A GIRL 🎀</div>
+
+<audio id="drumroll">
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_2a1b4d6f2c.mp3">
+</audio>
 
 <script>
 
 const wheel=document.getElementById("wheel");
 
 const labels=[
-"👶 Boy",
-"🎀 Girl",
-"👶 Boy",
-"🎀 Girl",
-"👶 Boy",
-"🎀 Girl",
-"👶 Boy",
-"🎀 Girl"
+"👶 Boy","🎀 Girl","👶 Boy","🎀 Girl",
+"👶 Boy","🎀 Girl","👶 Boy","🎀 Girl"
 ];
 
 const sliceAngle=360/labels.length;
@@ -155,7 +191,8 @@ el.className="sliceText";
 
 let rotate=i*sliceAngle + sliceAngle/2;
 
-el.style.transform=`translate(-50%,-50%) rotate(${rotate}deg) translate(140px) rotate(90deg)`;
+el.style.transform=
+`translate(-50%,-50%) rotate(${rotate}deg) translate(140px) rotate(90deg)`;
 
 el.innerHTML=text;
 
@@ -168,26 +205,99 @@ let spinning=false;
 function spinWheel(){
 
 if(spinning) return;
-
 spinning=true;
 
+document.getElementById("drumroll").play();
+
 const spins=6;
-
-/* choose GIRL slice index (1,3,5,7) */
 const girlSlices=[1,3,5,7];
-
 const chosen=girlSlices[Math.floor(Math.random()*girlSlices.length)];
 
 const stopAngle=chosen*sliceAngle + sliceAngle/2;
-
 const finalRotation=spins*360 + (360-stopAngle);
 
 wheel.style.transform=`rotate(${finalRotation}deg)`;
 
 setTimeout(()=>{
-document.getElementById("result").innerHTML="🎀 IT'S A GIRL 🎀";
-spinning=false;
+suspenseReveal();
 },6000);
+
+}
+
+function suspenseReveal(){
+
+setTimeout(()=>{
+revealGirl();
+},3000);
+
+}
+
+function revealGirl(){
+
+document.getElementById("result").style.opacity=1;
+
+launchConfetti();
+launchBalloons();
+sparkleBurst();
+
+}
+
+function launchConfetti(){
+
+for(let i=0;i<150;i++){
+
+const c=document.createElement("div");
+c.className="confetti";
+
+c.style.left=Math.random()*100+"vw";
+
+const colors=["#ff6fae","#ffd1e6","#ffffff","#ff9ec4"];
+c.style.background=colors[Math.floor(Math.random()*colors.length)];
+
+c.style.animationDuration=(Math.random()*3+2)+"s";
+
+document.body.appendChild(c);
+
+setTimeout(()=>c.remove(),5000);
+
+}
+
+}
+
+function launchBalloons(){
+
+for(let i=0;i<12;i++){
+
+const b=document.createElement("div");
+b.className="balloon";
+
+b.style.left=Math.random()*100+"vw";
+b.style.background=Math.random()>0.5?"#ff9ec4":"#ff6fae";
+
+document.body.appendChild(b);
+
+setTimeout(()=>b.remove(),7000);
+
+}
+
+}
+
+function sparkleBurst(){
+
+for(let i=0;i<60;i++){
+
+const s=document.createElement("div");
+s.className="sparkle";
+
+s.style.left="50vw";
+s.style.background="#ffd1e6";
+s.style.animationDuration=(Math.random()*2+1)+"s";
+
+document.body.appendChild(s);
+
+setTimeout(()=>s.remove(),4000);
+
+}
 
 }
 
