@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -59,5 +60,103 @@ h1 {
 }
 
 #girl {
-  transform:
-```
+  transform: rotate(270deg);
+  color: white;
+}
+
+button {
+  margin-top: 30px;
+  padding: 15px 40px;
+  font-size: 18px;
+  background: #ff4081;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #e73370;
+}
+
+#result {
+  margin-top: 25px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #ff4081;
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: pink;
+  top: 0;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Spin the Wheel 🎡</h1>
+
+<div id="wheel-container">
+  <div id="pointer"></div>
+  <div id="wheel"></div>
+
+  <div class="label" id="boy">👶 It's a Boy</div>
+  <div class="label" id="girl">🎀 It's a Girl</div>
+</div>
+
+<button onclick="spinWheel()">SPIN</button>
+
+<div id="result"></div>
+
+<script>
+let spinning = false;
+
+function spinWheel() {
+  if (spinning) return;
+
+  spinning = true;
+
+  const wheel = document.getElementById("wheel");
+
+  // multiple spins + stop exactly on GIRL section
+  const spins = 5;
+  const girlAngle = 270; // girl slice location
+  const finalRotation = spins * 360 + girlAngle;
+
+  wheel.style.transform = `rotate(${finalRotation}deg)`;
+
+  setTimeout(() => {
+    document.getElementById("result").innerHTML = "🎀 IT'S A GIRL 🎀";
+    launchConfetti();
+    spinning = false;
+  }, 4000);
+}
+
+function launchConfetti() {
+  for (let i = 0; i < 80; i++) {
+    const conf = document.createElement("div");
+    conf.classList.add("confetti");
+    conf.style.left = Math.random() * window.innerWidth + "px";
+    conf.style.background = Math.random() > 0.5 ? "#ff66b2" : "#ffc0cb";
+    conf.style.animationDuration = (Math.random() * 2 + 2) + "s";
+    document.body.appendChild(conf);
+
+    setTimeout(() => conf.remove(), 3000);
+  }
+}
+</script>
+
+</body>
+</html>
