@@ -1,43 +1,64 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
-<title>Gender Reveal Spin</title>
+<meta charset="UTF-8">
+<title>Gender Reveal Spin Wheel</title>
+
 <style>
 body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #ffe6f0, #ffffff);
   text-align: center;
-  font-family: Arial;
-  background: #ffe6f0;
+  padding-top: 40px;
 }
+
+h1 {
+  color: #ff4081;
+}
+
+#wheel-container {
+  position: relative;
+  width: 320px;
+  margin: auto;
+}
+
 #wheel {
-  margin-top: 50px;
-  font-size: 40px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 8px solid #444;
+  background: conic-gradient(
+    #4da6ff 0deg 180deg,
+    #ff66b2 180deg 360deg
+  );
+  transition: transform 4s cubic-bezier(.17,.67,.83,.67);
 }
-button {
-  padding: 15px 30px;
+
+#pointer {
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 30px solid #333;
+  position: absolute;
+  top: -30px;
+  left: 145px;
+}
+
+.label {
+  position: absolute;
+  width: 100%;
+  top: 45%;
+  font-weight: bold;
   font-size: 20px;
-  background-color: hotpink;
+}
+
+#boy {
+  transform: rotate(90deg);
   color: white;
-  border: none;
-  border-radius: 10px;
 }
-</style>
-</head>
-<body>
 
-<h1>Spin the Wheel 🎡</h1>
-<div id="wheel">🎀 ??? 🎀</div>
-<br>
-<button onclick="spinWheel()">Spin</button>
-
-<script>
-function spinWheel() {
-  document.getElementById("wheel").innerHTML = "Spinning...";
-  
-  setTimeout(function() {
-    document.getElementById("wheel").innerHTML = "🎀 IT’S A GIRL 💗 🎀";
-  }, 2000);
-}
-</script>
-
-</body>
-</html>
+#girl {
+  transform:
+```
